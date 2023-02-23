@@ -2,6 +2,7 @@
 import sys
 import requests
 import urllib3
+import urllib
 from bs4 import BeautifulSoup
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -15,16 +16,14 @@ def sqli_exploit_get_csrf(s, url):
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
         "Accept-Encoding": "gzip, deflate",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Origin": "http://172.15.15.1:1000",
         "DNT": "1",
         "Connection": "close",
         "Upgrade-Insecure-Requests": "1",
         "Sec-GPC": "1"
     }
-    res = s.get(url + '/login?', verify=False, proxies=proxies)
+    res = s.get(url+'/login?279ru2020482',headers=header,verify=False,proxies=False)
     csrf_soup = BeautifulSoup(res.text, 'html.parser')
-    csrf_token = csrf_soup.find("magic")['value']
+    csrf_token = csrf_soup.find_all('input')[1].get('value')
     print("magic code is here " + csrf_token)
     return csrf_token
 
@@ -44,8 +43,8 @@ def sqli_exploit_login(s, csrf):
     }
     data = {'4Tredir': 'https://www.google.com/', 'magic': csrf,
             'username': '20BCS5005', 'password': 'Jatin@410'}
-    res = s.post(url+'/login?', header=header, data=data,
-                 verify=False, proxies=proxies)
+    res = s.post(url+'/login?', headers=header, data=data,
+                 verify=False, proxies=False)
     if 'LOGOUT' in res.text:
         print("[+] Logged in succesfully ")
     else:
